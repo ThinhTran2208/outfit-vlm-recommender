@@ -1,0 +1,42 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    init: true
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      ARTIFACT_DIR: /app/artifacts
+      FASHIONCLIP_EMBEDDINGS_PATH: /app/artifacts/fashionclip_item_embeddings.pt
+      EMBEDDING_MANIFEST_PATH: /app/artifacts/embedding_manifest_v1.json
+      RETRIEVAL_CATALOG_PATH: /app/artifacts/retrieval_catalog.jsonl
+      HF_HOME: /cache/huggingface
+    volumes:
+      - ${ARTIFACT_HOST_DIR:-./artifacts}:/app/artifacts:ro
+      - hf-cache:/cache/huggingface
+    shm_size: 1gb
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    healthcheck:
+      test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/health', timeout=3)"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    security_opt: [no-new-privileges:true]
+  frontend:
+    build: ./frontend
+    init: true
+    restart: unless-stopped
+    ports: ['57260:8080']
+    depends_on:
+      backend:
+        condition: service_healthy
+    security_opt: [no-new-privileges:true]
+volumes:
+  hf-cache:

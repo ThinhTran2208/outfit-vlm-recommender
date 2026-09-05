@@ -1,0 +1,101 @@
+{
+  "status": "ok",
+  "garments": [
+    {
+      "garment_id": "g1",
+      "category": "Top",
+      "name_en": "white shirt",
+      "name_vi": "áo trắng",
+      "description_en": "white shirt"
+    },
+    {
+      "garment_id": "g2",
+      "category": "Bottom",
+      "name_en": "blue jeans",
+      "name_vi": "quần jeans xanh",
+      "description_en": "blue jeans"
+    },
+    {
+      "garment_id": "g3",
+      "category": "Shoes",
+      "name_en": "red sneakers",
+      "name_vi": "giày đỏ",
+      "description_en": "red sneakers"
+    }
+  ],
+  "score": {
+    "total": 80,
+    "dimensions": {
+      "color_harmony": {
+        "score": 16,
+        "reason_vi": "Các món phối hợp hài hòa."
+      },
+      "style_coherence": {
+        "score": 16,
+        "reason_vi": "Các món phối hợp hài hòa."
+      },
+      "silhouette_proportion": {
+        "score": 16,
+        "reason_vi": "Các món phối hợp hài hòa."
+      },
+      "formality_occasion_coherence": {
+        "score": 16,
+        "reason_vi": "Các món phối hợp hài hòa."
+      },
+      "overall_styling": {
+        "score": 16,
+        "reason_vi": "Các món phối hợp hài hòa."
+      }
+    }
+  },
+  "problematic_item": {
+    "garment_id": "g3",
+    "category": "Shoes",
+    "name_en": "red sneakers",
+    "name_vi": "giày đỏ",
+    "reason_vi": "Có thể thử giày trung tính."
+  },
+  "replacement_mode": "improve",
+  "recommendations": [
+    {
+      "rank": 1,
+      "item_id": "Shoes_0",
+      "display_name_en": "Shoes",
+      "display_name_vi": "Giày",
+      "reason_facets": [
+        "color_harmony"
+      ],
+      "reason_vi": "Màu sắc phù hợp với áo.",
+      "category": "Shoes",
+      "query_en": "black leather loafers",
+      "image_url": "/api/items/Shoes_0/image"
+    },
+    {
+      "rank": 2,
+      "item_id": "Shoes_1",
+      "display_name_en": "Shoes",
+      "display_name_vi": "Giày",
+      "reason_facets": [
+        "color_harmony"
+      ],
+      "reason_vi": "Màu sắc phù hợp với áo.",
+      "category": "Shoes",
+      "query_en": "white minimalist sneakers",
+      "image_url": "/api/items/Shoes_1/image"
+    },
+    {
+      "rank": 3,
+      "item_id": "Shoes_2",
+      "display_name_en": "Shoes",
+      "display_name_vi": "Giày",
+      "reason_facets": [
+        "color_harmony"
+      ],
+      "reason_vi": "Màu sắc phù hợp với áo.",
+      "category": "Shoes",
+      "query_en": "brown suede derby shoes",
+      "image_url": "/api/items/Shoes_2/image"
+    }
+  ],
+  "commentary_vi": "Trong outfit này, giày đỏ là món được ưu tiên cân nhắc thay. Có thể thử giày trung tính.\n\n1. Giày: Màu sắc phù hợp với áo.\n\n2. Giày: Màu sắc phù hợp với áo.\n\n3. Giày: Màu sắc phù hợp với áo."
+}
