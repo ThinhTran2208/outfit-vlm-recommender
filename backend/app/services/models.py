@@ -63,6 +63,7 @@ class QwenBackend:
         self.model = Qwen3VLForConditionalGeneration.from_pretrained(
             settings.qwen_model_id,
             revision=settings.qwen_revision,
+            use_safetensors=True,
             dtype=getattr(torch, dtype),
             device_map="auto",
             attn_implementation="sdpa",
@@ -127,7 +128,11 @@ class FashionCLIP:
         self.dimension = manifest["embedding_dimension"]
         # CPU text encoding avoids competing with Qwen for GPU VRAM.
         self.model = (
-            CLIPModel.from_pretrained(manifest["model_name_or_version"], revision=revision).eval().to("cpu")
+            CLIPModel.from_pretrained(
+                manifest["model_name_or_version"], revision=revision, use_safetensors=True
+            )
+            .eval()
+            .to("cpu")
         )
         self.processor = CLIPProcessor.from_pretrained(manifest["model_name_or_version"], revision=revision)
         if self.model.config.projection_dim != self.dimension:
@@ -136,7 +141,8 @@ class FashionCLIP:
     def encode(self, queries):
         inputs = self.processor(text=queries, padding=True, truncation=True, return_tensors="pt")
         with self.torch.inference_mode():
-            vectors = self.model.get_text_features(**inputs).float()
+            vectors = self.model.get_text_features(**inputs)
+            vectors = getattr(vectors, "pooler_output", vectors).float()
             vectors = self.torch.nn.functional.normalize(vectors, dim=-1)
         if vectors.shape != (3, self.dimension) or not self.torch.isfinite(vectors).all():
             raise ValueError("Invalid FashionCLIP features")

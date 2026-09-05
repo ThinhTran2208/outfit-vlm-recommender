@@ -50,7 +50,13 @@ class UploadLimit:
         chunks = []
         size = 0
         while True:
-            message = await receive()
+            try:
+                message = await asyncio.wait_for(receive(), timeout=30)
+            except TimeoutError:
+                return await JSONResponse(
+                    Error(error_code="REQUEST_TIMEOUT", message_vi="Tải ảnh quá thời gian.").model_dump(),
+                    status_code=408,
+                )(scope, receive, send)
             if message["type"] == "http.disconnect":
                 return
             size += len(message.get("body", b""))
@@ -183,6 +189,20 @@ def create_app(settings=None, pipeline=None):
     @app.post(
         "/api/analyze",
         response_model=Success | Rejected,
+        openapi_extra={
+            "requestBody": {
+                "required": True,
+                "content": {
+                    "multipart/form-data": {
+                        "schema": {
+                            "type": "object",
+                            "required": ["image"],
+                            "properties": {"image": {"type": "string", "format": "binary"}},
+                        }
+                    }
+                },
+            }
+        },
         responses={
             400: {"model": Error},
             502: {"model": Error},
