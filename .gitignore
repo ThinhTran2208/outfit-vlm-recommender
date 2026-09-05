@@ -1,0 +1,13 @@
+.env
+.venv/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+node_modules/
+dist/
+artifacts/*
+!artifacts/README.md
+*.pt
+*.safetensors
+*.zip
+.cache/
