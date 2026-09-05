@@ -1,0 +1,37 @@
+name: MVP checks
+on:
+  push:
+    branches: [main, 'feat/**']
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - run: pip install torch==2.6.0 torchvision==0.21.0 --index-url https://download.pytorch.org/whl/cpu
+      - run: pip install -r backend/requirements.txt -r backend/requirements-dev.txt
+      - run: python -m ruff check backend scripts
+      - run: python -m ruff format --check backend scripts
+      - run: python -m pytest -q
+      - name: Verify model APIs without weights
+        run: python -c "from transformers import Qwen3VLForConditionalGeneration, AutoProcessor, CLIPModel, CLIPProcessor; from qwen_vl_utils import process_vision_info"
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci && npm run build
+        working-directory: frontend
+      - run: cp .env.example .env
+      - run: docker compose -f docker-compose.gpu.yml config --quiet
+      - run: docker build -t outfit-frontend frontend
