@@ -128,9 +128,7 @@ class FashionCLIP:
         self.dimension = manifest["embedding_dimension"]
         # CPU text encoding avoids competing with Qwen for GPU VRAM.
         self.model = (
-            CLIPModel.from_pretrained(
-                manifest["model_name_or_version"], revision=revision, use_safetensors=True
-            )
+            CLIPModel.from_pretrained(manifest["model_name_or_version"], revision=revision, weights_only=True)
             .eval()
             .to("cpu")
         )
